@@ -1,7 +1,7 @@
 # <img src="logo.png" alt="kcptun" height="60px" /> 
-[![GoDoc][1]][2] [![Release][13]][14] [![Powered][17]][18] [![Build Status][3]][4] [![Go Report Card][5]][6] [![Downloads][15]][16] 
-[1]: https://godoc.org/github.com/xtaci/kcptun?status.svg
-[2]: https://godoc.org/github.com/xtaci/kcptun
+[![Release][13]][14] [![Powered][17]][18] [![MIT licensed][11]][12] [![Build Status][3]][4] [![Go Report Card][5]][6] [![Downloads][15]][16] [![Gitter][19]][20] [![Docker][1]][2]
+[1]: https://images.microbadger.com/badges/image/xtaci/kcptun.svg
+[2]: https://microbadger.com/images/xtaci/kcptun
 [3]: https://travis-ci.org/xtaci/kcptun.svg?branch=master
 [4]: https://travis-ci.org/xtaci/kcptun
 [5]: https://goreportcard.com/badge/github.com/xtaci/kcptun
@@ -10,16 +10,16 @@
 [8]: https://raw.githubusercontent.com/xtaci/kcptun/master/LICENSE.md
 [9]: https://img.shields.io/github/stars/xtaci/kcptun.svg
 [10]: https://github.com/xtaci/kcptun/stargazers
-[11]: https://img.shields.io/github/forks/xtaci/kcptun.svg
-[12]: https://github.com/xtaci/kcptun/network
+[11]: https://img.shields.io/badge/license-MIT-blue.svg
+[12]: LICENSE.md
 [13]: https://img.shields.io/github/release/xtaci/kcptun.svg
 [14]: https://github.com/xtaci/kcptun/releases/latest
-[15]: https://img.shields.io/github/downloads/xtaci/kcptun/total.svg?maxAge=2592000
+[15]: https://img.shields.io/github/downloads/xtaci/kcptun/total.svg?maxAge=1800
 [16]: https://github.com/xtaci/kcptun/releases
 [17]: https://img.shields.io/badge/KCP-Powered-blue.svg
 [18]: https://github.com/skywind3000/kcp
-[19]: https://img.shields.io/docker/pulls/xtaci/kcptun.svg?maxAge=2592000
-[20]: https://hub.docker.com/r/xtaci/kcptun/
+[19]: https://badges.gitter.im/xtaci/kcptun.svg
+[20]: https://gitter.im/xtaci/kcptun?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 
 A tool for converting tcp stream into kcp+udp stream, :zap: ***[download address](https://github.com/xtaci/kcptun/releases/latest)***:zap:
 
@@ -29,29 +29,110 @@ A tool for converting tcp stream into kcp+udp stream, :zap: ***[download address
 
 ### *QuickStart* :lollipop:
 ```
-Server Side: ./server_linux_amd64 -t "127.0.0.1:1080" -l ":554" -mode fast2  // forwarding to local port 1080
-Client Side: ./client_darwin_amd64 -r "SERVERIP:554" -l ":1080" -mode fast2  // listening on port 1080
+Server Side: ./server_linux_amd64 -t "127.0.0.1:1080" -l ":4000" -mode fast2  // forwarding to local port 1080
+Client Side: ./client_darwin_amd64 -r "SERVERIP:4000" -l ":1080" -mode fast2  // listening on port 1080
 ```
 
+### *Performance* :lollipop:
+<img src="fast.png" alt="fast.com" height="256px" />       
+* Speed tested with: https://fast.com
+* WAN Link Speed: 100M ADSL
+* WIFI: 5GHz TL-WDR3320
+
 ### *Usage* :lollipop:
-![client](client.png)
-![server](server.png)
+Help output under MacOS X:
+```
+$ ./client_darwin_amd64 -h
+NAME:
+   kcptun - kcptun client
+
+USAGE:
+   client_darwin_amd64 [global options] command [command options] [arguments...]
+
+VERSION:
+   20160820
+
+COMMANDS:
+     help, h  Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --localaddr value, -l value   local listen address (default: ":12948")
+   --remoteaddr value, -r value  kcp server address (default: "vps:29900")
+   --key value                   pre-shared secret for client and server (default: "it's a secrect") [$KCPTUN_KEY]
+   --crypt value                 aes, aes-128, aes-192, salsa20, blowfish, twofish, cast5, 3des, tea, xtea, xor, none (default: "aes")
+   --mode value                  profiles: fast3, fast2, fast, normal (default: "fast")
+   --conn value                  set num of UDP connections to server (default: 1)
+   --mtu value                   set maximum transmission unit of UDP packets (default: 1350)
+   --sndwnd value                set send window size(num of packets) (default: 128)
+   --rcvwnd value                set receive window size(num of packets) (default: 1024)
+   --datashard value             set reed-solomon erasure coding - datashard (default: 10)
+   --parityshard value           set reed-solomon erasure coding - parityshard (default: 3)
+   --dscp value                  set DSCP(6bit) (default: 0)
+   --nocomp                      disable compression
+   --help, -h                    show help
+   --version, -v                 print the version
+
+
+$ ./server_darwin_amd64 -h
+NAME:
+   kcptun - kcptun server
+
+USAGE:
+   server_darwin_amd64 [global options] command [command options] [arguments...]
+
+VERSION:
+   20160820
+
+COMMANDS:
+     help, h  Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --listen value, -l value  kcp server listen address (default: ":29900")
+   --target value, -t value  target server address (default: "127.0.0.1:12948")
+   --key value               pre-shared secret for client and server (default: "it's a secrect") [$KCPTUN_KEY]
+   --crypt value             aes, aes-128, aes-192, salsa20, blowfish, twofish, cast5, 3des, tea, xtea, xor, none (default: "aes")
+   --mode value              profiles: fast3, fast2, fast, normal (default: "fast")
+   --mtu value               set maximum transmission unit of UDP packets (default: 1350)
+   --sndwnd value            set send window size(num of packets) (default: 1024)
+   --rcvwnd value            set receive window size(num of packets) (default: 1024)
+   --datashard value         set reed-solomon erasure coding - datashard (default: 10)
+   --parityshard value       set reed-solomon erasure coding - parityshard (default: 3)
+   --dscp value              set DSCP(6bit) (default: 0)
+   --nocomp                  disable compression
+   --help, -h                show help
+   --version, -v             print the version
+```
 
 ### *Applications* :lollipop:   
 1. Real-time gaming.
 2. Cross-ISP data exchange in PRC.
 3. Other lossy network.
 
-### *Parameters Recommended* :lollipop: 
-```
-Test Environment: China Telecom 100M ADSL(100mbps up/8mbps down)
-SERVER:   -mtu 1400 -sndwnd 2048 -rcvwnd 2048 -mode fast2
-CLIENT:   -mtu 1400 -sndwnd 256 -rcvwnd 2048 -mode fast2 -dscp 46
-```
+### *Parameters* :lollipop: 
+***Both sides must agree on the following parameters:***
+* datashard
+* parityshard
+* nocomp
+* key
+* crypt
+
+other parameters can be set independently.
 
 *How to optimize*：
 > Step 1：Increase client rcvwnd & server sndwnd simultaneously & gradually。       
 > Step 2：Try download something and observer, if the bandwidth usage is close the limit then stop, otherwise goto step 1.     
+
+***NOTICE: if too much retranmission happens, it's quite possible the windows are too large***
+
+### *Security* :lollipop: 
+No matter what encryption you are using for application layer, if you specify ```-crypt none``` to kcptun, 
+the header will be ***PLAINTEXT*** to everyone; I suggest ```-crypt aes-128``` for encryption at least .
+
+NOTICE: ```-crypt xor``` is also insecure, do not use this unless you know what you are doing.
+
+### *Memory Control* :lollipop: 
+Routers, mobile devices are sensitive to memory consumption; by setting GOGC environment(eg: GOGC=20) will lower memory consumption.
+Reference: https://blog.golang.org/go15gc
 
 ### *Traffic Control* :lollipop: 
 ***Intended audience : for those server's bandwidth is quite limited.***      
@@ -84,6 +165,7 @@ Manual control is supported with hidden parameters, you must understand KCP prot
 ```
  -mode manual -nodelay 1 -resend 2 -nc 1 -interval 20
 ```
+I suggest fast2 for high-loss network, normal for low-loss network.
 
 ### *Forward Error Correction* :lollipop: 
 In coding theory, the Reed–Solomon code belongs to the class of non-binary cyclic error-correcting codes. The Reed–Solomon code is based on univariate polynomials over finite fields.
@@ -105,6 +187,8 @@ Setting parameters of RS-Code with ```-datashard 10 -parityshard 3```
 > Reference: http://google.github.io/snappy/
 
 disable compression by setting ```-nocomp``` on both side.
+
+> Tips: Turning off compression may reduce latency.
 
 ### *SNMP* :lollipop:
 ```go
@@ -134,20 +218,6 @@ type Snmp struct {
 
 Sending a signal by ```kill -SIGUSR1 pid``` will give SNMP information for KCP，useful for fine-grained adjustment.
 Of which ```RetransSegs,FastRetransSegs,LostSegs,OutSegs``` is the most useful.
-
-### *Performance* :lollipop:
-```
-root@vultr:~# iperf -s
-------------------------------------------------------------
-Server listening on TCP port 5001
-TCP window size: 4.00 MByte (default)
-------------------------------------------------------------
-[  4] local 172.7.7.1 port 5001 connected with 172.7.7.2 port 55453
-[ ID] Interval       Transfer     Bandwidth
-[  4]  0.0-18.0 sec  5.50 MBytes  2.56 Mbits/sec     <-- connection via kcptun
-[  5] local 45.32.xxx.xxx port 5001 connected with 218.88.xxx.xxx port 17220
-[  5]  0.0-17.9 sec  2.12 MBytes   997 Kbits/sec     <-- direct connnection via tcp
-```
 
 ### *Donations* :dollar:
 ![donate](donate.png)          

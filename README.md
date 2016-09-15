@@ -1,55 +1,120 @@
 # <img src="logo.png" alt="kcptun" height="60px" /> 
-[![GoDoc][1]][2] [![Release][13]][14] [![Powered][17]][18] [![Build Status][3]][4] [![Go Report Card][5]][6] [![Downloads][15]][16] 
-[1]: https://godoc.org/github.com/xtaci/kcptun?status.svg
-[2]: https://godoc.org/github.com/xtaci/kcptun
+[![Release][13]][14] [![Powered][17]][18] [![MIT licensed][11]][12] [![Build Status][3]][4] [![Go Report Card][5]][6] [![Downloads][15]][16] [![Gitter][19]][20] [![Docker][1]][2]
+[1]: https://images.microbadger.com/badges/image/xtaci/kcptun.svg
+[2]: https://microbadger.com/images/xtaci/kcptun
 [3]: https://travis-ci.org/xtaci/kcptun.svg?branch=master
 [4]: https://travis-ci.org/xtaci/kcptun
 [5]: https://goreportcard.com/badge/github.com/xtaci/kcptun
 [6]: https://goreportcard.com/report/github.com/xtaci/kcptun
 [7]: https://img.shields.io/badge/license-MIT-blue.svg
 [8]: https://raw.githubusercontent.com/xtaci/kcptun/master/LICENSE.md
-[9]: https://img.shields.io/github/stars/xtaci/kcptun.svg
-[10]: https://github.com/xtaci/kcptun/stargazers
-[11]: https://img.shields.io/github/forks/xtaci/kcptun.svg
-[12]: https://github.com/xtaci/kcptun/network
+[11]: https://img.shields.io/badge/license-MIT-blue.svg
+[12]: LICENSE.md
 [13]: https://img.shields.io/github/release/xtaci/kcptun.svg
 [14]: https://github.com/xtaci/kcptun/releases/latest
 [15]: https://img.shields.io/github/downloads/xtaci/kcptun/total.svg?maxAge=1800
 [16]: https://github.com/xtaci/kcptun/releases
 [17]: https://img.shields.io/badge/KCP-Powered-blue.svg
 [18]: https://github.com/skywind3000/kcp
-[19]: https://img.shields.io/docker/pulls/xtaci/kcptun.svg?maxAge=2592000
-[20]: https://hub.docker.com/r/xtaci/kcptun/
-***TCP端口加速器，用于KCP协议测试 :zap: [官方下载地址](https://github.com/xtaci/kcptun/releases/latest):zap:***
+[19]: https://badges.gitter.im/xtaci/kcptun.svg
+[20]: https://gitter.im/xtaci/kcptun?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
+
+***[kcp-go](https://github.com/xtaci/kcp-go)协议测试小工具 :zap: [官方下载地址](https://github.com/xtaci/kcptun/releases/latest):zap:***
 
 ![kcptun](kcptun.png)
 [English Readme](README.en.md)
 ### *快速设定* :lollipop:
 ```
-服务器: ./server_linux_amd64 -t "127.0.0.1:1080" -l ":554" -mode fast2  // 转发到服务器的本地1080端口
-客户端: ./client_darwin_amd64 -r "服务器IP地址:554" -l ":1080" -mode fast2    // 监听客户端的本地1080端口
-注: 服务器端需要有服务监听1080端口
+服务器: ./server_linux_amd64 -t "127.0.0.1:8388" -l ":4000" -mode fast2  // 转发到服务器的本地8388端口
+客户端: ./client_darwin_amd64 -r "服务器IP地址:4000" -l ":8388" -mode fast2    // 监听客户端的本地8388端口
+注: 服务器端需要有服务监听8388端口
 ```
+
+### *速度对比* :lollipop:
+<img src="fast.png" alt="fast.com" height="256px" />       
+* 测速网站: https://fast.com
+* 接入: 100M ADSL
+* WIFI: 5GHz TL-WDR3320
 
 ### *使用方法* :lollipop:
 在Mac OS X El Capitan下的帮助输出: 
-
-![client](client.png)
-![server](server.png)
-
-### *推荐参数* :lollipop: 
 ```
-适用大部分ADSL接入（非对称上下行）的参数（实验环境电信100M ADSL）
-其它带宽请按比例调整，比如 50M ADSL，把 CLIENT 的 -sndwnd -rcvwnd 减掉一半，SERVER 不变
+$ ./client_darwin_amd64 -h
+NAME:
+   kcptun - kcptun client
 
-SERVER:   -mtu 1400 -sndwnd 2048 -rcvwnd 2048 -mode fast2
-CLIENT:   -mtu 1400 -sndwnd 256 -rcvwnd 2048 -mode fast2 -dscp 46
-*巭孬嫑乱动* 
+USAGE:
+   client_darwin_amd64 [global options] command [command options] [arguments...]
+
+VERSION:
+   20160820
+
+COMMANDS:
+     help, h  Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --localaddr value, -l value   local listen address (default: ":12948")
+   --remoteaddr value, -r value  kcp server address (default: "vps:29900")
+   --key value                   pre-shared secret for client and server (default: "it's a secrect") [$KCPTUN_KEY]
+   --crypt value                 aes, aes-128, aes-192, salsa20, blowfish, twofish, cast5, 3des, tea, xtea, xor, none (default: "aes")
+   --mode value                  profiles: fast3, fast2, fast, normal (default: "fast")
+   --conn value                  set num of UDP connections to server (default: 1)
+   --mtu value                   set maximum transmission unit of UDP packets (default: 1350)
+   --sndwnd value                set send window size(num of packets) (default: 128)
+   --rcvwnd value                set receive window size(num of packets) (default: 1024)
+   --datashard value             set reed-solomon erasure coding - datashard (default: 10)
+   --parityshard value           set reed-solomon erasure coding - parityshard (default: 3)
+   --dscp value                  set DSCP(6bit) (default: 0)
+   --nocomp                      disable compression
+   --help, -h                    show help
+   --version, -v                 print the version
+
+
+$ ./server_darwin_amd64 -h
+NAME:
+   kcptun - kcptun server
+
+USAGE:
+   server_darwin_amd64 [global options] command [command options] [arguments...]
+
+VERSION:
+   20160820
+
+COMMANDS:
+     help, h  Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --listen value, -l value  kcp server listen address (default: ":29900")
+   --target value, -t value  target server address (default: "127.0.0.1:12948")
+   --key value               pre-shared secret for client and server (default: "it's a secrect") [$KCPTUN_KEY]
+   --crypt value             aes, aes-128, aes-192, salsa20, blowfish, twofish, cast5, 3des, tea, xtea, xor, none (default: "aes")
+   --mode value              profiles: fast3, fast2, fast, normal (default: "fast")
+   --mtu value               set maximum transmission unit of UDP packets (default: 1350)
+   --sndwnd value            set send window size(num of packets) (default: 1024)
+   --rcvwnd value            set receive window size(num of packets) (default: 1024)
+   --datashard value         set reed-solomon erasure coding - datashard (default: 10)
+   --parityshard value       set reed-solomon erasure coding - parityshard (default: 3)
+   --dscp value              set DSCP(6bit) (default: 0)
+   --nocomp                  disable compression
+   --help, -h                show help
+   --version, -v             print the version
 ```
+
+### *参数调整* :lollipop: 
+***两端参数必须一致的有:***
+* datashard
+* parityshard
+* nocomp
+* key
+* crypt
+
+其余为两边可独立设定的参数
 
 *简易自我调优方法*：
 > 第一步：同时在两端逐步增大client rcvwnd和server sndwnd;        
 > 第二步：尝试下载，观察如果带宽利用率（服务器＋客户端两端都要观察）接近物理带宽则停止，否则跳转到第一步。
+
+***注意：产生大量重传时，一定是窗口偏大了***
 
 *带宽计算公式*：
 ```
@@ -75,6 +140,15 @@ CLIENT:   -mtu 1400 -sndwnd 256 -rcvwnd 2048 -mode fast2 -dscp 46
 
 		max_bandwidth_fec = max_bandwidth * (10 + 3) /10 = 1.3*max_bandwidth ＝ 1.3 * 25Mbps = 32.5Mbps
 ```
+
+### *安全* :lollipop: 
+无论你上层如何加密，如果```-crypt none```，那么协议头部都是***明文***的，建议至少采用```-crypt aes-128```加密。
+
+注意: ```-crypt xor``` 也是不安全的，除非你知道你在做什么。
+
+### *内存控制* :lollipop: 
+路由器，手机等嵌入式设备通常对内存用量敏感，通过调节环境变量GOGC（例如GOGC=20)后启动client，可以降低内存使用。      
+参考：https://blog.golang.org/go15gc
 
 ### *流量控制* :lollipop: 
 ***必要性: 针对流量敏感的服务器，做双保险。***      
@@ -119,6 +193,7 @@ DSCP差分服务代码点（Differentiated Services Code Point），IETF于1998�
 > Reference: http://google.github.io/snappy/
 
 通过参数 ```-nocomp``` 在两端同时设定以关闭压缩。
+> 提示: 关闭压缩可能会降低延迟。
 
 ### *内置模式* :lollipop: 
 响应速度:     
@@ -130,6 +205,7 @@ DSCP差分服务代码点（Differentiated Services Code Point），IETF于1998�
 ```
  -mode manual -nodelay 1 -resend 2 -nc 1 -interval 20
 ```
+高丢包率的网络建议采用fast2, 低丢包率的网络，建议采用normal。
 
 ### *SNMP* :lollipop:
 ```go
@@ -160,20 +236,6 @@ type Snmp struct {
 使用```kill -SIGUSR1 pid``` 可以在控制台打印出SNMP信息，通常用于精细调整***当前链路的有效载荷比***。        
 观察```RetransSegs,FastRetransSegs,LostSegs,OutSegs```这几者的数值比例，用于参考调整```-mode manual,fec```的参数。        
 
-### *性能对比* :lollipop:
-```
-root@vultr:~# iperf -s
-------------------------------------------------------------
-Server listening on TCP port 5001
-TCP window size: 4.00 MByte (default)
-------------------------------------------------------------
-[  4] local 172.7.7.1 port 5001 connected with 172.7.7.2 port 55453
-[ ID] Interval       Transfer     Bandwidth
-[  4]  0.0-18.0 sec  5.50 MBytes  2.56 Mbits/sec     <-- connection via kcptun
-[  5] local 45.32.xxx.xxx port 5001 connected with 218.88.xxx.xxx port 17220
-[  5]  0.0-17.9 sec  2.12 MBytes   997 Kbits/sec     <-- direct connnection via tcp
-```
-
 ### *故障排除* :lollipop:
 > Q: 客户端和服务器端***皆无*** ```stream opened```信息。       
 > A: 连接客户端程序的端口设置错误。     
@@ -192,7 +254,9 @@ TCP window size: 4.00 MByte (default)
 ### *捐赠* :dollar:
 ![donate](donate.png)          
 
-对该项目的捐款将用于[gonet/2](http://gonet2.github.io/)游戏服务器框架的研发。
+对该项目的捐款将用于[gonet/2](http://gonet2.github.io/)游戏服务器框架的研发。     
+
+```特别感谢: 郑H立, 南D风, Li, 七q, 凌J，昶，Les*ables, Ky*n, 噼**啦, *斌, 小苍** 等，名字已做特殊处理。```
 
 ### *参考资料* :paperclip:
 1. https://github.com/skywind3000/kcp -- KCP - A Fast and Reliable ARQ Protocol.
